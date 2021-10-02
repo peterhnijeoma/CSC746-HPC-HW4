@@ -57,7 +57,7 @@ set(BENCHMARK "blas")
 configure_file(job.in job-${BENCHMARK})
 
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
-#add_library(bench-blocked-omp OBJECT benchmark.cpp) ## peter commented
+add_library(bench-blocked-omp OBJECT benchmark.cpp)
 target_compile_definitions(benchmark-blocked-omp PRIVATE -DBLOCKED) ## peter added
 #target_compile_definitions(bench-blocked-omp PRIVATE -DBLOCKED) ## peter commented
 #target_compile_features(bench-blocked-omp PRIVATE cxx_std_11)
@@ -71,7 +71,7 @@ if ( LIKWID_FOUND )
    #target_compile_definitions(bench-blocked-omp PRIVATE -DLIKWID_PERFMON)  ## peter commented
    target_link_libraries(benchmark-blocked-omp PRIVATE ${LIKWID_LIBRARIES})
 endif ()
-#target_compile_features(benchmark-blocked-omp PRIVATE c_std_11 c_restrict)
+target_compile_features(benchmark-blocked-omp PRIVATE c_std_11 c_restrict) ## peter uncommented
 target_compile_options(benchmark-blocked-omp PRIVATE -fopenmp -Wall -pedantic -march=native)
 set(BENCHMARK "blocked-omp")
 configure_file(job.in job-${BENCHMARK})
