@@ -99,11 +99,11 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
 
   #pragma omp parallel
   {
-#ifdef LIKWID_PERFMON
+//#ifdef LIKWID_PERFMON
       std::cout << "setting likwid marker\n";
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
       std::cout << "done setting likwid starter marker\n";
-#endif
+//#endif
       #pragma omp for
       for (ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
@@ -121,11 +121,11 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
         }
       } //end #pragma omp for
-#ifdef LIKWID_PERFMON
+//#ifdef LIKWID_PERFMON
       std::cout << "about to stop likwid marker\n";
       LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
       std::cout << "done stopping likwid marker\n";
-#endif
+//#endif
   } // end #pragma omp parallel
   
   // copy 2d array CC to column major vector C
