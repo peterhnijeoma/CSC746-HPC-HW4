@@ -1,0 +1,27 @@
+#!/bin/bash -l
+#SBATCH --constraint=knl
+#SBATCH --cpus-per-task=1
+#SBATCH --qos=debug
+#SBATCH --nodes=1
+#SBATCH --time=00:04:00
+#SBATCH --cpu-freq=1400000
+#SBATCH --job-name=job-blas
+#SBATCH --output=job-blas.o%j
+#SBATCH --error=job-blas.e%j
+
+export OMP_PLACES=threads
+export OMP_PROC_BIND=spread
+export PERF_COUNTER_GROUP=HBM_CACHE
+export MARKER_FLAG="-m"
+
+for N in 128 512 2048 # loop over problem sizes
+   do
+      for t in 1  # if running the blas version, uncomment this line and comment out the previous line looping over t in 1 4 16 64
+         do
+         let maxcore=$t-1
+         echo srun -n 1 likwid-perfctr $MARKER_FLAG -g $PERF_COUNTER_GROUP -C N:0-$maxcore ./benchmark-blas -N $N
+         srun -n 1 likwid-perfctr $MARKER_FLAG -g $PERF_COUNTER_GROUP -C N:0-$maxcore ./benchmark-blas -N $N
+         done # iterate over concurrency level
+done # iterate over problem size
+
+# eof

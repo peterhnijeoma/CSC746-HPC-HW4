@@ -1,0 +1,30 @@
+#!/bin/bash -l
+#SBATCH --constraint=knl
+#SBATCH --cpus-per-task=1
+#SBATCH --qos=debug
+#SBATCH --nodes=1
+#SBATCH --time=00:04:00
+#SBATCH --cpu-freq=1400000
+#SBATCH --job-name=job-blocked-omp
+#SBATCH --output=job-blocked-omp.o%j
+#SBATCH --error=job-blocked-omp.e%j
+
+export OMP_PLACES=threads
+export OMP_PROC_BIND=spread
+export PERF_COUNTER_GROUP=HBM_CACHE
+export MARKER_FLAG="-m"
+
+for N in 128 512 2048 # loop over problem sizes
+   do
+   for B in 4 16  # uncomment these two lines
+      do            # to also iterate over block sizes for the blocked version
+      for t in 1 4 16 64  # loop over concurrency level
+         do
+         let maxcore=$t-1
+         echo srun -n 1 likwid-perfctr $MARKER_FLAG -g $PERF_COUNTER_GROUP -C N:0-$maxcore ./benchmark-blocked-omp -N $N -B $B
+         srun -n 1 likwid-perfctr $MARKER_FLAG -g $PERF_COUNTER_GROUP -C N:0-$maxcore ./benchmark-blocked-omp -N $N -B $B
+         done # iterate over concurrency level
+   done # iterate over block size, uncomment me if doing a loop over blocks
+done # iterate over problem size
+
+# eof
