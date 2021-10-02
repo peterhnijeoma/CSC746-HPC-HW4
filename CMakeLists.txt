@@ -57,17 +57,18 @@ set(BENCHMARK "blas")
 configure_file(job.in job-${BENCHMARK})
 
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
-add_library(bench-blocked-omp OBJECT benchmark.cpp)
-target_compile_definitions(bench-blocked-omp PRIVATE -DBLOCKED)
+#add_library(bench-blocked-omp OBJECT benchmark.cpp) ## peter commented
+target_compile_definitions(benchmark-blocked-omp PRIVATE -DBLOCKED) ## peter added
+#target_compile_definitions(bench-blocked-omp PRIVATE -DBLOCKED) ## peter commented
 #target_compile_features(bench-blocked-omp PRIVATE cxx_std_11)
-target_compile_options(bench-blocked-omp PRIVATE -fopenmp)
+#target_compile_options(bench-blocked-omp PRIVATE -fopenmp)  ## peter commented
 target_link_libraries(benchmark-blocked-omp PRIVATE bench-blocked-omp ${BLAS_LIBRARIES})
 target_link_options(benchmark-blocked-omp PRIVATE -fopenmp)
 if ( LIKWID_FOUND )
    target_include_directories(benchmark-blocked-omp PRIVATE ${LIKWID_INCLUDE_DIR})
    target_compile_definitions(benchmark-blocked-omp PRIVATE -DLIKWID_PERFMON)
-   target_include_directories(bench-blocked-omp PRIVATE ${LIKWID_INCLUDE_DIR})
-   target_compile_definitions(bench-blocked-omp PRIVATE -DLIKWID_PERFMON)
+   #target_include_directories(bench-blocked-omp PRIVATE ${LIKWID_INCLUDE_DIR}) ## peter commented
+   #target_compile_definitions(bench-blocked-omp PRIVATE -DLIKWID_PERFMON)  ## peter commented
    target_link_libraries(benchmark-blocked-omp PRIVATE ${LIKWID_LIBRARIES})
 endif ()
 #target_compile_features(benchmark-blocked-omp PRIVATE c_std_11 c_restrict)
