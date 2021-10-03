@@ -86,13 +86,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
 
   #pragma omp parallel
   {
-     double **AAA, **BBB, **CCC;  // matrix block arrays
-//#ifdef LIKWID_PERFMON
-      std::cout << "setting likwid marker\n";
-      LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
-      std::cout << "done setting likwid starter marker\n";
-//#endif
-      #pragma omp for
+      double **AAA, **BBB, **CCC;  // matrix block arrays
       // allocate memory for block matrix copy
       AAA = new double *[block_size];
       BBB = new double *[block_size];
@@ -103,7 +97,12 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
          BBB[i] = new double [block_size];
          CCC[i] = new double [block_size];
       }
-
+//#ifdef LIKWID_PERFMON
+      std::cout << "setting likwid marker\n";
+      LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
+      std::cout << "done setting likwid starter marker\n";
+//#endif
+      #pragma omp for
       for (ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
         for (jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
