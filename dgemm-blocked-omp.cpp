@@ -60,7 +60,6 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
  
   // declare and dynamically allocate 2D arrays
   double **AA, **BB, **CC;
-  double **AAA, **BBB, **CCC;
 
   AA = new double *[n];
   BB = new double *[n];
@@ -70,18 +69,6 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
      AA[i] = new double [n];
      BB[i] = new double [n];
      CC[i] = new double [n];
-  }
-
-  // allocate memory for block matrix copy
-
-  AAA = new double *[block_size];
-  BBB = new double *[block_size];
-  CCC = new double *[block_size];
-  for (int i = 0; i < block_size; i++)
-  {
-     AAA[i] = new double [block_size];
-     BBB[i] = new double [block_size];
-     CCC[i] = new double [block_size];
   }
   
   // copy column major vector A, B, and C into 2D arrays AA, BB, and CC respectively 
@@ -99,12 +86,24 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
 
   #pragma omp parallel
   {
+     double **AAA, **BBB, **CCC;  // matrix block arrays
 //#ifdef LIKWID_PERFMON
       std::cout << "setting likwid marker\n";
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
       std::cout << "done setting likwid starter marker\n";
 //#endif
       #pragma omp for
+      // allocate memory for block matrix copy
+      AAA = new double *[block_size];
+      BBB = new double *[block_size];
+      CCC = new double *[block_size];
+      for (int i = 0; i < block_size; i++)
+      {
+         AAA[i] = new double [block_size];
+         BBB[i] = new double [block_size];
+         CCC[i] = new double [block_size];
+      }
+
       for (ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
         for (jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
@@ -121,6 +120,15 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
         }
       } //end #pragma omp for
+      for (int i = 0; i < block_size; i++)
+      {
+         delete [] AAA[i];
+         delete [] BBB[i];
+         delete [] CCC[i];
+      }
+      delete [] AAA;
+      delete [] BBB;
+      delete [] CCC;
 //#ifdef LIKWID_PERFMON
       std::cout << "about to stop likwid marker\n";
       LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
@@ -147,14 +155,4 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   delete [] AA;
   delete [] BB;
   delete [] CC;
-
-  for (int i = 0; i < block_size; i++)
-  {
-     delete [] AAA[i];
-     delete [] BBB[i];
-     delete [] CCC[i];
-  }
-  delete [] AAA;
-  delete [] BBB;
-  delete [] CCC;
 }
