@@ -56,8 +56,9 @@ target_compile_options(benchmark-blas PRIVATE -Wall -pedantic -march=native)
 set(BENCHMARK "blas")
 configure_file(job.in job-${BENCHMARK})
 
-target_compile_definitions(benchmark-blocked-omp PRIVATE -DBLOCKED)
+
 add_executable(benchmark-blocked-omp dgemm-blocked-omp.cpp)
+target_compile_definitions(benchmark-blocked-omp PRIVATE -DBLOCKED)
 target_link_libraries(benchmark-blocked-omp PRIVATE benchmark ${BLAS_LIBRARIES})
 target_link_options(benchmark-blocked-omp PRIVATE -fopenmp)
 if ( LIKWID_FOUND )
