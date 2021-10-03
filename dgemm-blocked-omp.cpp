@@ -92,8 +92,8 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   
   // block matrix multiplication logic
 
-  #pragma omp parallel
-  {
+//  #pragma omp parallel
+//  {
       double **AAA, **BBB, **CCC;  // matrix block arrays
       // allocate memory for block matrix copy
       AAA = new double *[block_size];
@@ -110,7 +110,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
       //std::cout << "done setting likwid starter marker\n";
 //#endif
-      #pragma omp for
+//      #pragma omp for
       for (int ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
         for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
@@ -141,10 +141,10 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       delete [] CCC;
 //#ifdef LIKWID_PERFMON
       //std::cout << "about to stop likwid marker\n";
-      LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
+//      LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
       //std::cout << "done stopping likwid marker\n";
 //#endif
-  } // end #pragma omp parallel
+//  } // end #pragma omp parallel
   
   // copy 2d array CC to column major vector C
   for (int i = 0; i < n; i++)
