@@ -14,7 +14,8 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-  std::cout << "copy matrix block: row location is:" + brl << " column location is:" + bcl << "\n";
+  std::cout << "copy matrix block: row location is:" + brl << "\n";
+  std::cout << " and column location is:" + bcl << "\n";
   for (int row = brl; row < bs; row++)
   {
      for (int col = bcl; col < bs; col++)
@@ -114,7 +115,8 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       {
         for (jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-          copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
+           std::cout << "will copy matrix block of CC to CCC for row " + ii << " and column " + jj << "\n";
+          //copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
           for (kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
             //copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
