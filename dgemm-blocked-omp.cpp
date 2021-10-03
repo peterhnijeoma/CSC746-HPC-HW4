@@ -14,11 +14,18 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
+  std::cout << "copy matrix block: row location is:" + brl << " column location is:" + bcl << "\n";
   for (int row = brl; row < bs; row++)
   {
      for (int col = bcl; col < bs; col++)
      {
+        std::cout << "about to copy matrix block element\n";
+        //double dd = D[row][col];
+        //double ss = S[row][col];
+        std::cout << "D[" + row << "][" + col << "] and S[" + row << "][" + col << "] \n";
         D[row][col] = S[row][col];
+        std::cout << "done to copying matrix block element\n";
+        //std::cout << "D[" + row << "][" + col << "] is:" + D[row][col] << "S[" + row << "][" + col << "] is:" + S[row][col] << "\n";
      }
   }
 }
@@ -98,24 +105,25 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
          CCC[i] = new double [block_size];
       }
 //#ifdef LIKWID_PERFMON
-      std::cout << "setting likwid marker\n";
+      //std::cout << "setting likwid marker\n";
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
-      std::cout << "done setting likwid starter marker\n";
+      //std::cout << "done setting likwid starter marker\n";
 //#endif
       #pragma omp for
       for (ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
         for (jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-          //copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
+          copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
           for (kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
             //copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
             //copy_matrix_block(BB, BBB, kk*block_size, jj*block_size, block_size);
             // basic matrix multiple applied to matrix blocks
             //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
-            std::cout << "ii is:" + ii << "; jj is: " + jj << "; kk is: " + kk;
+            std::cout << "ii is:" + ii << "; jj is: " + jj << "; kk is: " + kk << "\n";
           }
+          std::cout << "\n";
           // copy block product to produc matrix
           //copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
         }
@@ -130,9 +138,9 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       delete [] BBB;
       delete [] CCC;
 //#ifdef LIKWID_PERFMON
-      std::cout << "about to stop likwid marker\n";
+      //std::cout << "about to stop likwid marker\n";
       LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
-      std::cout << "done stopping likwid marker\n";
+      //std::cout << "done stopping likwid marker\n";
 //#endif
   } // end #pragma omp parallel
   
