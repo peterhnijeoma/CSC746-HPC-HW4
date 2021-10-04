@@ -93,7 +93,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   
   // block matrix multiplication logic
 
-  #pragma omp parallel default(shared) private(ii, jj, kk, block_size, CC)
+  #pragma omp parallel default(shared) private(ii, jj, kk, CC)
   {
       double **AAA, **BBB, **CCC;  // matrix block arrays
       // allocate memory for block matrix copy
