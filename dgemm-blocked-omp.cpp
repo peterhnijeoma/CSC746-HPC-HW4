@@ -65,6 +65,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
    // after the matrix multiply code but before the end of the parallel code block.
 
   std::cout << "block size is: " + block_size << "==\n";
+  int ii, jj, kk;
  
   // declare and dynamically allocate 2D arrays
   double **AA, **BB, **CC;
@@ -92,8 +93,8 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   
   // block matrix multiplication logic
 
-//  #pragma omp parallel
-//  {
+  #pragma omp parallel default(shared) private(ii, jj, kk, block_size, CC)
+  {
       double **AAA, **BBB, **CCC;  // matrix block arrays
       // allocate memory for block matrix copy
       AAA = new double *[block_size];
@@ -110,20 +111,20 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
       //std::cout << "done setting likwid starter marker\n";
 //#endif
-//      #pragma omp for
-      for (int ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
+      #pragma omp for
+      for (ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
-        for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
+        for (jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-           std::cout << "will copy matrix block of CC to CCC for row: " + ii << "; and column: " + jj << "===\n";
+           std::cout << " Thread number is: " + omp_get_thread_num() << "will copy matrix block of CC to CCC for row: " + ii << "; and column: " + jj << "===\n";
           //copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
-          for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
+          for (kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
             //copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
             //copy_matrix_block(BB, BBB, kk*block_size, jj*block_size, block_size);
             // basic matrix multiple applied to matrix blocks
             //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
-            std::cout << "ii is:" + ii << "; jj is: " + jj << "; kk is: " + kk << "===\n";
+            std::cout << " Thread number is: " + omp_get_thread_num() << "ii is: " + ii << "; jj is: " + jj << "; kk is: " + kk << "===\n";
           }
           std::cout << "\n";
           // copy block product to produc matrix
@@ -144,7 +145,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
 //      LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
       //std::cout << "done stopping likwid marker\n";
 //#endif
-//  } // end #pragma omp parallel
+  } // end #pragma omp parallel
   
   // copy 2d array CC to column major vector C
   for (int i = 0; i < n; i++)
