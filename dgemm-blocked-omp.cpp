@@ -103,16 +103,19 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       {
         for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-          copy_matrix_block(CC, CCC, ii, jj, block_size);
+           std::cout << "copy of product matrix block\n";
+          //copy_matrix_block(CC, CCC, ii, jj, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
-            copy_matrix_block(AA, AAA, ii, kk, block_size);
-            copy_matrix_block(BB, BBB, kk, jj, block_size);
+            //copy_matrix_block(AA, AAA, ii, kk, block_size);
+            //copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
-            matrix_multiply(AAA, BBB, CCC, block_size, block_size);
+            //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
+            std::cout << "at this point BMMCO is done for a block\n";
+            std::cout << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "\n";
           }
           // copy block product to produc matrix
-          copy_block_to_matrix(CCC, CC, ii, jj, block_size);
+          //copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
       } //end #pragma omp for
       for (int i = 0; i < block_size; i++)
