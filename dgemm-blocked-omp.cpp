@@ -47,7 +47,7 @@ void copy_block_to_matrix(double **S, double **D, int brl, int bcl, int bs)
   {
      for (int col = 0; col < bs; col++)
      {
-        std::cout << "cpoying block at: [" << brl+row << "][" << bcl+col << "]\n";
+        //std::cout << "cpoying block at: [" << brl+row << "][" << bcl+col << "]\n";
         D[brl+row][bcl+col] = S[row][col];
      }
   }
@@ -123,7 +123,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
             //std::cout << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "\n";
           }
           // copy block product to produc matrix
-          std::cout << "copy product block CCC to product matric CC for: " << ii << jj << "\n";
+          //std::cout << "copy product block CCC to product matric CC for: " << ii << jj << "\n";
           copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
       } //end #pragma omp for
