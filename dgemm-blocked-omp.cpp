@@ -14,7 +14,7 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-   std::cout << "inside copy - row location is: " << brl << "column location is: " << bcl << "\n";
+  //std::cout << "inside copy - row location is: " << brl << "column location is: " << bcl << "\n";
   for (int row = 0; row < bs; row++)
   {
      for (int col = 0; col < bs; col++)
@@ -34,7 +34,7 @@ void matrix_multiply(double **AS, double **BS, double **PROD, int num_rows, int 
       {
          for (int k = 0; k < num_cols; k++)
          {
-            std::cout << "multiplying AAA to BBB - for: [" << row << "][" << col << "]\n";
+            //std::cout << "multiplying AAA to BBB - for: [" << row << "][" << col << "]\n";
             PROD[row][col] += AS[row][k] * BS[k][col];
          }
       }
@@ -47,6 +47,7 @@ void copy_block_to_matrix(double **S, double **D, int brl, int bcl, int bs)
   {
      for (int col = 0; col < bs; col++)
      {
+        std::cout << "cpoying block at: [" << brl+row << "][" << bcl+col << "]\n";
         D[brl+row][bcl+col] = S[row][col];
      }
   }
@@ -110,20 +111,20 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           // std::cout << "copy of product matrix block\n";
           copy_matrix_block(CC, CCC, ii, jj, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
-          //for (int kk = 0; kk < block_size; kk++)  // for each row and column of blocks
           {
             //std::cout << "copying AA matrix block to AAA - stating at: [" << ii << "][" << kk << "]\n";
             copy_matrix_block(AA, AAA, ii, kk, block_size);
             //std::cout << "copying BB matrix block to BBB - stating at: [" << kk << "][" << jj << "]\n";
             copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
-            std::cout << "multiplying AAA and BBB - product in CCC \n";
+            //std::cout << "multiplying AAA and BBB - product in CCC \n";
             matrix_multiply(AAA, BBB, CCC, block_size, block_size);
-            std::cout << "at this point BMMCO is done for a block\n";
-            std::cout << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "\n";
+            //std::cout << "at this point BMMCO is done for a block\n";
+            //std::cout << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "\n";
           }
           // copy block product to produc matrix
-          //copy_block_to_matrix(CCC, CC, ii, jj, block_size);
+          std::cout << "copy product block CCC to product matric CC for: " << ii << jj << "\n";
+          copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
       } //end #pragma omp for
       for (int i = 0; i < block_size; i++)
