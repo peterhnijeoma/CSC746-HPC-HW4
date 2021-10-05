@@ -16,9 +16,9 @@ void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
   std::cout << "copy matrix block: row location is:" + brl << "\n";
   std::cout << " and column location is:" + bcl << "\n";
-  for (int row = brl; row < bs; row++)
+  for (int row = brl; row < brl+bs; row++)
   {
-     for (int col = bcl; col < bs; col++)
+     for (int col = bcl; col < bcl+bs; col++)
      {
         std::cout << "about to copy matrix block element\n";
         //double dd = D[row][col];
