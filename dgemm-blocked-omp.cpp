@@ -64,7 +64,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
    // but before your matrix multiply code, and then include LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME)
    // after the matrix multiply code but before the end of the parallel code block.
 
-  std::cout << "block size is: " + block_size << "==\n";
+  //std::cout << "block size is: " + block_size << "==\n";
   //int ii, jj, kk;
  
   // declare and dynamically allocate 2D arrays
@@ -130,7 +130,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           }
           std::cout << "\n";
           // copy block product to produc matrix
-          //copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
+          copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
       } //end #pragma omp for
       for (int i = 0; i < block_size; i++)
