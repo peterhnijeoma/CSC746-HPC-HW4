@@ -14,8 +14,8 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-  std::cout << "copy matrix block: row location is:" << brl << "\n";
-  std::cout << " and column location is:" << bcl << "\n";
+  //std::cout << "copy matrix block: row location is:" << brl << "\n";
+  //std::cout << " and column location is:" << bcl << "\n";
   for (int row = 0; row < bs; row++)
   {
      for (int col = 0; col < bs; col++)
@@ -125,8 +125,8 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
             copy_matrix_block(AA, AAA, ii, kk, block_size);
             copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
-            //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
-            std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
+            matrix_multiply(AAA, BBB, CCC, block_size, block_size);
+            //std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
           }
           std::cout << "\n";
           // copy block product to produc matrix
