@@ -14,14 +14,14 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-   std::cout << "row location is: " << brl << "column location is: " << bcl << "\n";
+   std::cout << "inside copy - row location is: " << brl << "column location is: " << bcl << "\n";
   for (int row = 0; row < bs; row++)
   {
      for (int col = 0; col < bs; col++)
      {
-        std::cout << "before copy - row is: " << row+brl << "; column is: " << col+bcl << "\n";
+        //std::cout << "before copy - row is: " << row+brl << "; column is: " << col+bcl << "\n";
         D[row][col] = S[row + brl][col + bcl];
-        std::cout << "after copy - D value is: " << D[row][col] << "; S value is: " << S[row+brl][col+bcl] << "\n";
+        //std::cout << "after copy - D value is: " << D[row][col] << "; S value is: " << S[row+brl][col+bcl] << "\n";
      }
   }
 }
@@ -106,12 +106,13 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       {
         for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-           std::cout << "copy of product matrix block\n";
+          // std::cout << "copy of product matrix block\n";
           copy_matrix_block(CC, CCC, ii, jj, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           //for (int kk = 0; kk < block_size; kk++)  // for each row and column of blocks
           {
-            //copy_matrix_block(AA, AAA, ii, kk, block_size);
+             std::cout << "copying AA matrix block to AAA - stating at: [" << ii << "][" << kk << "]\n";
+            copy_matrix_block(AA, AAA, ii, kk, block_size);
             //copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
             //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
