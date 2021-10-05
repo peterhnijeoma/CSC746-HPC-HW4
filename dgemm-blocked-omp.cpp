@@ -128,7 +128,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
             matrix_multiply(AAA, BBB, CCC, block_size, block_size);
             //std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
           }
-          std::cout << "\n";
+          //std::cout << "\n";
           // copy block product to produc matrix
           copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
