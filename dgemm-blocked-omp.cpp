@@ -34,6 +34,7 @@ void matrix_multiply(double **AS, double **BS, double **PROD, int num_rows, int 
       {
          for (int k = 0; k < num_cols; k++)
          {
+            std::cout << "multiplying AAA to BBB - for: [" << row << "][" << col << "]\n";
             PROD[row][col] += AS[row][k] * BS[k][col];
          }
       }
@@ -113,10 +114,11 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           {
             //std::cout << "copying AA matrix block to AAA - stating at: [" << ii << "][" << kk << "]\n";
             copy_matrix_block(AA, AAA, ii, kk, block_size);
-            std::cout << "copying BB matrix block to BBB - stating at: [" << kk << "][" << jj << "]\n";
+            //std::cout << "copying BB matrix block to BBB - stating at: [" << kk << "][" << jj << "]\n";
             copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
-            //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
+            std::cout << "multiplying AAA and BBB - product in CCC \n";
+            matrix_multiply(AAA, BBB, CCC, block_size, block_size);
             std::cout << "at this point BMMCO is done for a block\n";
             std::cout << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "\n";
           }
