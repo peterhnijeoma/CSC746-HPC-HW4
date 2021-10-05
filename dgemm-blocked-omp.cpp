@@ -16,17 +16,17 @@ void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
   std::cout << "copy matrix block: row location is:" << brl << "\n";
   std::cout << " and column location is:" << bcl << "\n";
-  for (int row = brl; row < brl + bs; row++)
+  for (int row = 0; row < bs; row++)
   {
-     for (int col = bcl; col < bcl + bs; col++)
+     for (int col = 0; col < bs; col++)
      {
         std::cout << "about to copy matrix block element\n";
         //double dd = D[row][col];
         //double ss = S[row][col];
-        std::cout << "D[" << row << "][" << col << "] and S[" << row << "][" << col << "] \n";
-        D[row][col] = S[row][col];
+        std::cout << "D[" << row << "][" << col << "] and S[" << row + brl << "][" << col+bcl << "] \n";
+        //D[row][col] = S[row+brl][col+bcl];
         std::cout << "done copying matrix block element\n";
-        std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row << "][" << col << "] is:" << S[row][col] << "\n";
+        std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row+brl << "][" << col+bcl << "] is:" << S[row+brl][col+bcl] << "\n";
      }
   }
 }
