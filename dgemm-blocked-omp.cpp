@@ -14,19 +14,19 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-  std::cout << "copy matrix block: row location is:" + brl << "\n";
-  std::cout << " and column location is:" + bcl << "\n";
-  for (int row = brl; row < brl+bs; row++)
+  std::cout << "copy matrix block: row location is:" << brl << "\n";
+  std::cout << " and column location is:" << bcl << "\n";
+  for (int row = brl; row < brl + bs; row++)
   {
-     for (int col = bcl; col < bcl+bs; col++)
+     for (int col = bcl; col < bcl + bs; col++)
      {
         std::cout << "about to copy matrix block element\n";
         //double dd = D[row][col];
         //double ss = S[row][col];
-        std::cout << "D[" + row << "][" + col << "] and S[" + row << "][" + col << "] \n";
+        std::cout << "D[" << row << "][" << col << "] and S[" << row << "][" << col << "] \n";
         D[row][col] = S[row][col];
-        std::cout << "done to copying matrix block element\n";
-        //std::cout << "D[" + row << "][" + col << "] is:" + D[row][col] << "S[" + row << "][" + col << "] is:" + S[row][col] << "\n";
+        std::cout << "done copying matrix block element\n";
+        std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row << "][" << col << "] is:" << S[row][col] << "\n";
      }
   }
 }
@@ -121,15 +121,15 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
-            copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
-            copy_matrix_block(BB, BBB, kk*block_size, jj*block_size, block_size);
+            //copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
+            //copy_matrix_block(BB, BBB, kk*block_size, jj*block_size, block_size);
             // basic matrix multiple applied to matrix blocks
-            matrix_multiply(AAA, BBB, CCC, block_size, block_size);
+            //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
             std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
           }
           std::cout << "\n";
           // copy block product to produc matrix
-          copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
+          //copy_block_to_matrix(CCC, CC, ii*block_size, jj*block_size, block_size);
         }
       } //end #pragma omp for
       for (int i = 0; i < block_size; i++)
