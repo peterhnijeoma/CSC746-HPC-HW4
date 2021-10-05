@@ -14,19 +14,11 @@ const char* dgemm_desc = "Blocked dgemm, OpenMP-enabled";
 
 void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
 {
-  //std::cout << "copy matrix block: row location is:" << brl << "\n";
-  //std::cout << " and column location is:" << bcl << "\n";
   for (int row = 0; row < bs; row++)
   {
      for (int col = 0; col < bs; col++)
      {
-        //std::cout << "about to copy matrix block element\n";
-        //double dd = D[row][col];
-        //double ss = S[row][col];
-        //std::cout << "D[" << row << "][" << col << "] and S[" << row + brl << "][" << col+bcl << "] \n";
         D[row][col] = S[row+brl][col+bcl];
-        //std::cout << "done copying matrix block element\n";
-        //std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row+brl << "][" << col+bcl << "] is:" << S[row+brl][col+bcl] << "\n";
      }
   }
 }
@@ -64,9 +56,6 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
    // but before your matrix multiply code, and then include LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME)
    // after the matrix multiply code but before the end of the parallel code block.
 
-  //std::cout << "block size is: " + block_size << "==\n";
-  //int ii, jj, kk;
- 
   // declare and dynamically allocate 2D arrays
   double **AA, **BB, **CC;
 
@@ -93,7 +82,6 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
   
   // block matrix multiplication logic
 
-  //#pragma omp parallel default(shared) private(ii, jj, kk, CC)
   #pragma omp parallel
   {
       double **AAA, **BBB, **CCC;  // matrix block arrays
@@ -108,17 +96,13 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
          CCC[i] = new double [block_size];
       }
 //#ifdef LIKWID_PERFMON
-      //std::cout << "setting likwid marker\n";
       LIKWID_MARKER_START(MY_MARKER_REGION_NAME);
-      //std::cout << "done setting likwid starter marker\n";
 //#endif
       #pragma omp for
       for (int ii = 0; ii < n; ii += block_size)  // partition rows by block size; iterate for n/block_size blocks
       {
         for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-          //std::cout << " Thread number is: " << omp_get_thread_num() << "will copy matrix block of CC to CCC for row: " << ii << "; and column: " << jj << "===\n";
-          //copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
           copy_matrix_block(CC, CCC, ii, jj, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
@@ -126,9 +110,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
             copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
             matrix_multiply(AAA, BBB, CCC, block_size, block_size);
-            //std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
           }
-          //std::cout << "\n";
           // copy block product to produc matrix
           copy_block_to_matrix(CCC, CC, ii, jj, block_size);
         }
@@ -143,9 +125,7 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       delete [] BBB;
       delete [] CCC;
 //#ifdef LIKWID_PERFMON
-      //std::cout << "about to stop likwid marker\n";
       LIKWID_MARKER_STOP(MY_MARKER_REGION_NAME);
-      //std::cout << "done stopping likwid marker\n";
 //#endif
   } // end #pragma omp parallel
   
