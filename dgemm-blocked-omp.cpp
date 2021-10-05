@@ -111,9 +111,10 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           //for (int kk = 0; kk < block_size; kk++)  // for each row and column of blocks
           {
-             std::cout << "copying AA matrix block to AAA - stating at: [" << ii << "][" << kk << "]\n";
+            //std::cout << "copying AA matrix block to AAA - stating at: [" << ii << "][" << kk << "]\n";
             copy_matrix_block(AA, AAA, ii, kk, block_size);
-            //copy_matrix_block(BB, BBB, kk, jj, block_size);
+            std::cout << "copying BB matrix block to BBB - stating at: [" << kk << "][" << jj << "]\n";
+            copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
             //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
             std::cout << "at this point BMMCO is done for a block\n";
