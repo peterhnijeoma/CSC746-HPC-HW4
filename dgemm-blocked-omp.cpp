@@ -24,7 +24,7 @@ void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
         //double dd = D[row][col];
         //double ss = S[row][col];
         std::cout << "D[" << row << "][" << col << "] and S[" << row + brl << "][" << col+bcl << "] \n";
-        //D[row][col] = S[row+brl][col+bcl];
+        D[row][col] = S[row+brl][col+bcl];
         std::cout << "done copying matrix block element\n";
         std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row+brl << "][" << col+bcl << "] is:" << S[row+brl][col+bcl] << "\n";
      }
