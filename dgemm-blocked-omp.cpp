@@ -20,13 +20,13 @@ void copy_matrix_block(double **S, double **D, int brl, int bcl, int bs)
   {
      for (int col = 0; col < bs; col++)
      {
-        std::cout << "about to copy matrix block element\n";
+        //std::cout << "about to copy matrix block element\n";
         //double dd = D[row][col];
         //double ss = S[row][col];
-        std::cout << "D[" << row << "][" << col << "] and S[" << row + brl << "][" << col+bcl << "] \n";
+        //std::cout << "D[" << row << "][" << col << "] and S[" << row + brl << "][" << col+bcl << "] \n";
         D[row][col] = S[row+brl][col+bcl];
-        std::cout << "done copying matrix block element\n";
-        std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row+brl << "][" << col+bcl << "] is:" << S[row+brl][col+bcl] << "\n";
+        //std::cout << "done copying matrix block element\n";
+        //std::cout << "D[" << row << "][" << col << "] is:" << D[row][col] << "S[" << row+brl << "][" << col+bcl << "] is:" << S[row+brl][col+bcl] << "\n";
      }
   }
 }
@@ -117,13 +117,13 @@ void square_dgemm_blocked(int n, int block_size, double* A, double* B, double* C
       {
         for (int jj = 0; jj < n; jj += block_size) // partition columns by block size; iterate for n/block_size blocks
         {
-           std::cout << " Thread number is: " << omp_get_thread_num() << "will copy matrix block of CC to CCC for row: " << ii << "; and column: " << jj << "===\n";
+          std::cout << " Thread number is: " << omp_get_thread_num() << "will copy matrix block of CC to CCC for row: " << ii << "; and column: " << jj << "===\n";
           //copy_matrix_block(CC, CCC, ii*block_size, jj*block_size, block_size);
           copy_matrix_block(CC, CCC, ii, jj, block_size);
           for (int kk = 0; kk < n; kk += block_size)  // for each row and column of blocks
           {
-            //copy_matrix_block(AA, AAA, ii*block_size, kk*block_size, block_size);
-            //copy_matrix_block(BB, BBB, kk*block_size, jj*block_size, block_size);
+            copy_matrix_block(AA, AAA, ii, kk, block_size);
+            //copy_matrix_block(BB, BBB, kk, jj, block_size);
             // basic matrix multiple applied to matrix blocks
             //matrix_multiply(AAA, BBB, CCC, block_size, block_size);
             std::cout << " Thread number is: " << omp_get_thread_num() << "ii is: " << ii << "; jj is: " << jj << "; kk is: " << kk << "===\n";
